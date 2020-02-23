@@ -24,7 +24,7 @@ class httpHandler {
  
             case 'post':
                   $request = json_decode($body);
-                  header('Content-type: application/json');
+                  header('Content-Type: application/json');
                   echo "{\"ValidUser\":\"" . $this->db->validateUser($request->user,$request->password) . "\"}";
                   break;
 
