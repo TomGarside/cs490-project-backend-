@@ -1,4 +1,6 @@
 <?php 
+// uncomment for debug
+// ini_set('display_errors', 1); error_reporting(E_ALL);
 
 // handles http connection and initializes DB object 
 class httpHandler {
@@ -25,7 +27,7 @@ class httpHandler {
             case 'post':
                   $request = json_decode($body);
                   header('Content-Type: application/json');
-                  echo "{\"ValidUser\":\"" . $this->db->validateUser($request->user,$request->password) . "\"}";
+                  echo $this->db->validateUser($request->user,$request->password);
                   break;
 
             default:
@@ -51,18 +53,18 @@ class httpHandler {
      }
     //validate password and return a string 
     public function validateUser($user,$password){
-        $sql = "SELECT password FROM Users WHERE name = '" . $user ."' LIMIT 1"; 
+        $sql = "SELECT password, Role FROM Users WHERE name = '" . $user ."' LIMIT 1"; 
        
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $result = mysqli_query($connection,$sql);
-        $storedPassword = mysqli_fetch_object($result);
+        $data  = mysqli_fetch_object($result);
        
         $retVal = "false";
         
-        if(password_verify($password,$storedPassword->password)){
+        if(password_verify($password,$data->password)){
            $retVal = "true"; 
         }
-        return $retVal;    
+        return "{\"ValidUser\":\"" . $retVal. "\",\"role\":\"" . $data->Role . "\"}";    
       }
 }
 // initialize http object 
