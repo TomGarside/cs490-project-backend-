@@ -17,7 +17,7 @@ sql <<EOF
          description VARCHAR(1000),
          difficulty VARCHAR(10),
          category   VARCHAR(10,
-         tests VARCHAR(1000)
+         testCases JSON
 
          CONSTRAINT name                                                                         
             PRIMARY KEY (name)  
@@ -27,7 +27,11 @@ sql <<EOF
          creator VARCHAR(20)
 
          CONSTRAINT name                                                                           
-             PRIMARY KEY (name)  
+             PRIMARY KEY (name)
+          
+         CONSTRAINT creator 
+             FOREIGN KEY creator
+                REFERENCES user (name)   
 );
 
  CREATE TABLE IF NOT EXISTS examQuestion (                                                         
@@ -37,6 +41,12 @@ sql <<EOF
                                                                        
           CONSTRAINT name 
                  PRIMARY KEY (examname questionName)
+          CONSTRAINT examname
+               FOREIGN KEY examname 
+                  REFFERENCES exam (name)
+          CONSTRAINT questionName
+               FOREIGN KEY questionName
+                  REFFERENCES questions (name)
 
 CREATE TABLE IF NOT EXISTS questionResult (
          question VARCHAR(20), 
@@ -47,8 +57,20 @@ CREATE TABLE IF NOT EXISTS questionResult (
          adjustedGrade VARCHAR(10), 
          finalGrade VARCHAR(10)                                                                 
          
-        CONSTRAINT name 
-               PRIMARY KEY (question, exam, user) 
+        CONSTRAINT find 
+               PRIMARY KEY (question, exam, user)
+
+        CONSTRAINT examname                                                                       
+               FOREIGN KEY exam                                                                
+                  REFFERENCES exam (name) 
+                                                         
+         CONSTRAINT questionName                                                                  
+               FOREIGN KEY question                                                           
+                  REFFERENCES questions (name)
+                                                     
+         CONSTRAINT user 
+              FOREIGN KEY user 
+                  REFFERENCES user(name)                                       
 ); 
  
 EOF
