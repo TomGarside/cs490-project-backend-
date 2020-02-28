@@ -18,8 +18,8 @@ mysql -u $username -p$password  -h $host -D tg253  <<EOF
  CREATE TABLE IF NOT EXISTS questions(
          name VARCHAR(100),
          description VARCHAR(1000),
-         difficulty VARCHAR(10),
-         category   VARCHAR(10),
+         difficulty VARCHAR(100),
+         category   VARCHAR(100),
          testCases JSON,
          PRIMARY KEY (name)
 );
