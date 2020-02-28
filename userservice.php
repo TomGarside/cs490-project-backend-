@@ -53,18 +53,19 @@ class httpHandler {
      }
     //validate password and return a string 
     public function validateUser($user,$password){
-        $sql = "SELECT password, Role FROM user WHERE name = '" . $user ."' LIMIT 1"; 
+        $sql = "SELECT password, role FROM user WHERE name = '" . $user ."' LIMIT 1"; 
        
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $result = mysqli_query($connection,$sql);
         $data  = mysqli_fetch_object($result);
        
         $retVal = "false";
-        
+        $retRole = "";
         if(password_verify($password,$data->password)){
-           $retVal = "true"; 
+           $retVal = "true";
+           $retRole = $data->role; 
         }
-        return "{\"ValidUser\":\"" . $retVal. "\",\"role\":\"" . $data->Role . "\"}";    
+        return "{\"ValidUser\":\"" . $retVal. "\",\"role\":\"" . $retRole . "\"}";    
       }
 }
 // initialize http object 
