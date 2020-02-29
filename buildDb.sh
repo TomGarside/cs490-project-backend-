@@ -20,6 +20,7 @@ mysql -u $username -p$password  -h $host -D tg253  <<EOF
          description VARCHAR(1000),
          difficulty VARCHAR(100),
          category   VARCHAR(100),
+         score VARCHAR(10),
          testCases JSON,
          PRIMARY KEY (name)
 );
