@@ -72,6 +72,9 @@ class httpHandler {
         $questionResult = mysqli_query($connection,$sqlQuestions);
 
         while ($row = $questionResult->fetch_assoc()) {
+            $testcases = $row["testCases"];
+            unset($row["testCases"]);
+            $row["testCases"]=json_decode($testcases);
             $results_array[] = $row;
            }
         return "{\"name\":\"" . $jsonResponse["name"] . "\", \"creator\":\"" . $jsonResponse["creator"] . "\", \"questions\":" . json_encode($results_array); 
