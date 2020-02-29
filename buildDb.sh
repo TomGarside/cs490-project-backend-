@@ -30,9 +30,8 @@ mysql -u $username -p$password  -h $host -D tg253  <<EOF
          FOREIGN KEY (creator) REFERENCES user (name)   
 );
 
- CREATE TABLE IF NOT EXISTS examQuestion (                                                         
-
-          examname VARCHAR(100),                                                                 
+ CREATE TABLE IF NOT EXISTS examQuestion (                                                     
+          examname VARCHAR(100),                                                             
           questionName VARCHAR(100),
           PRIMARY KEY (examname, questionName),
           FOREIGN KEY (examname) REFERENCES exam (name),
@@ -45,7 +44,8 @@ CREATE TABLE IF NOT EXISTS questionResult (
          answer VARCHAR(10000), 
          autograde VARCHAR(10), 
          adjustedGrade VARCHAR(10), 
-         finalGrade VARCHAR(10),                                                                 
+         finalGrade VARCHAR(10),                                                              
+
          PRIMARY KEY (question, exam, user),
          FOREIGN KEY (exam) REFERENCES exam (name), 
          FOREIGN KEY (question) REFERENCES questions (name),
