@@ -1,6 +1,6 @@
 <?php 
 // uncomment for debug
-ini_set('display_errors', 1); error_reporting(E_ALL);
+//ini_set('display_errors', 1); error_reporting(E_ALL);
 
 // handles http connection and initializes DB object 
 class httpHandler {
@@ -57,7 +57,7 @@ class httpHandler {
         
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $result = mysqli_multi_query($connection,$sql);
-        return mysqli_error($connection ) . $sql;
+        return mysqli_error($connection );
   
     }
     //validate password and return a string 

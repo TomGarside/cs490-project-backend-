@@ -1,6 +1,6 @@
 <?php 
 // uncomment for debug
-ini_set('display_errors', 1); error_reporting(E_ALL);
+//ini_set('display_errors', 1); error_reporting(E_ALL);
 
 // handles http connection and initializes DB object 
 class httpHandler {
@@ -48,22 +48,15 @@ class httpHandler {
          $this->password = $password; 
          $this->dataBase = $username;         
                                                   
-         // create table if it does not exist           
-         $sql = "CREATE TABLE IF NOT EXISTS questions (name VARCHAR(100), tests VARCHAR(1000));";  
-         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-         $result = mysqli_query($connection,$sql); 
-          
-         if(!$result){ die("failed to create table"); }
      }
 
     public function insertQuestion($name, $description, $difficulty, $category, $testCases){
         $sql = "INSERT INTO questions (name, description, difficulty, category, testCases ) VALUES (\"" . $name . "\",\"" . $description . "\",\"" . $difficulty . "\",\"" . $category . "\",'" . json_encode($testCases) . "');";
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $result = mysqli_query($connection,$sql);
-        return $sql;
+        return mysqli_error($connection);
   
-    }
-    //validate password and return a string 
+    } 
     public function getAllQuestions(){
         $sql = "SELECT * FROM questions;"; 
        
@@ -71,6 +64,9 @@ class httpHandler {
         $result = mysqli_query($connection,$sql);
         
         while ($row = $result->fetch_assoc()) {
+            $testcases = $row["testCases"];
+            unset($row["testCases"]);
+            $row["testCases"]=json_decode($testcases);
            $results_array[] = $row;
         }
         return json_encode($results_array); 

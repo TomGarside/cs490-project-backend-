@@ -43,13 +43,6 @@ class httpHandler {
          $this->username = $username;
          $this->password = $password; 
          $this->dataBase = $username;         
-                                                  
-         // create table if it does not exist           
-         $sql = "CREATE TABLE IF NOT EXISTS user (name VARCHAR(20), password VARCHAR(100));";  
-         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-         $result = mysqli_query($connection,$sql); 
-          
-         if(!$result){ die("failed to create table"); }
      }
     //validate password and return a string 
     public function validateUser($user,$password){
