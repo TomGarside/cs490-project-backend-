@@ -27,7 +27,7 @@ class httpHandler {
             case 'post':
                   $request = json_decode($body);
                   header('Content-Type: application/json');
-                  echo $this->db->insertQuestion($request->name,$request->description, $request->difficulty, $request->category, $request->testCases);
+                  echo $this->db->insertQuestion($request->name,$request->description, $request->difficulty, $request->category, $request->score, $request->testCases);
                   break;
             // return all questions  
             case 'get':
@@ -50,8 +50,8 @@ class httpHandler {
                                                   
      }
 
-    public function insertQuestion($name, $description, $difficulty, $category, $testCases){
-        $sql = "INSERT INTO questions (name, description, difficulty, category, testCases ) VALUES (\"" . $name . "\",\"" . $description . "\",\"" . $difficulty . "\",\"" . $category . "\",'" . json_encode($testCases) . "');";
+     public function insertQuestion($name, $description, $difficulty, $category, $score, $testCases){
+        $sql = "INSERT INTO questions (name, description, difficulty, category, score, testCases ) VALUES (\"" . $name . "\",\"" . $description . "\",\"" . $difficulty . "\",\"" . $category  ."\",\"" . $score . "\",'" . json_encode($testCases) . "');";
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $result = mysqli_query($connection,$sql);
         return mysqli_error($connection);
