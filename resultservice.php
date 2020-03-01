@@ -68,42 +68,62 @@ class httpHandler {
             $sql.= " VALUES (\"" . $name . "\",\"" . "$exam" . "\",\"" . $result->question . "\",\"" . mysqli_real_escape_string($connection,$result->answer) . "\",\"" . $result->autograde . "\",\"" . $result->adjustedGrade ."\",\"" . $result->finalGrade ."\");";    
         }
         
-        $result = mysqli_multi_query($connection,$sql);
-        return mysqli_error($connection );
-  
+        if(!mysqli_multi_query($connection,$sql)){
+            http_response_code(400);
+            $returnVal["insert"] = false; 
+            $returnVal["error"] = mysqli_error($connection );
+        }else{
+            http_response_code(201);
+            $returnVal["insert"] = true; 
+        }
+        return json_encode($returnVal);     
     }
      // get all student results for a single exam
      public function getAllExamResults($exam){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase); 
         $sql = "SELECT user.name AS user, questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade  FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $exam . "\";"; 
-        $result = mysqli_query($connection,$sql);
-        while ($row = $result->fetch_assoc()) {
-           $row["testCases"] = json_decode($row["testCases"]); 
-           $results_array[] = $row;
+        if($result = mysqli_query($connection,$sql)){
+            while ($row = $result->fetch_assoc()) {
+               $row["testCases"] = json_decode($row["testCases"]); 
+               $results_array[] = $row;
+            }
+            $output[$exam]=$results_array;
+        }else{
+            http_response_code(400);
+            $output["error"] = mysqli_error($connection);
         }
-        $output[$exam]=$results_array;
         return json_encode($output); 
      }
     // get exam results for a sigle student 
     public function getExamResult($user, $examName){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $sql = "SELECT  questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade  FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $examName . "\" AND questionResult.user = \"". $user. "\";";
-        $result = mysqli_query($connection,$sql); 
-        while ($row = $result->fetch_assoc()) {
-            $row["testCases"] = json_decode($row["testCases"]);
-            $results_array[] = $row;
+        if($result = mysqli_query($connection,$sql)){ 
+            while ($row = $result->fetch_assoc()) {
+                $row["testCases"] = json_decode($row["testCases"]);
+                $results_array[] = $row;
+            }
+            $output["user"] = $user; 
+            $output["exam"] = $examName; 
+            $output["results"] = $results_array;
+        }else{
+            http_response_code(400);
+            $output["error"] = mysqli_error($connection);
         }
-        $output["user"] = $user; 
-        $output["exam"] = $examName; 
-        $output["results"] = $results_array;
         return json_encode($output);
      }
     //update exam result for student 
      public function updateExamResult($user, $exam, $question, $autoGrade, $adjustedGrade) {
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade . "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";";
-        $result = mysqli_query($connection, $sql);
-        return $result; 
+        if(mysqli_query($connection, $sql)){
+            $output["update"] = true; 
+        }else{
+            http_response_code(400);
+            $output["update"] = false;
+            $output["error"] = mysqli_error($connection);
+        }
+        return json_encode($output); 
     }
 }
 // initialize http object 

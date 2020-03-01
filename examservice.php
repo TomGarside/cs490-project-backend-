@@ -33,6 +33,7 @@ class httpHandler {
             case 'get':
                   header('Content-Type: application/json');
                   echo $this->db->getexam($_GET["name"]);
+                  break;
 
             default:
                   http_response_code(405);
@@ -56,8 +57,15 @@ class httpHandler {
         }
         
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $result = mysqli_multi_query($connection,$sql);
-        return mysqli_error($connection );
+        if(mysqli_multi_query($connection,$sql)){
+            http_response_code(201);
+            $response_body["insert"] = true; 
+        }else{
+            http_response_code(400);
+            $response_body["insert"] = false;
+            $response_body["error"] = json_encode(mysqli_error($connection));        
+        }
+        return json_encode($response_body); ;
   
     }
     //validate password and return a string 
@@ -69,15 +77,21 @@ class httpHandler {
         $jsonResponse = $result->fetch_assoc();        
          
         $sqlQuestions = "SELECT * FROM questions INNER JOIN examQuestion ON questions.name=examQuestion.questionName WHERE examQuestion.examname=\"" . $examName ."\";";
-        $questionResult = mysqli_query($connection,$sqlQuestions);
+        if ($questionResult = mysqli_query($connection,$sqlQuestions)){
 
-        while ($row = $questionResult->fetch_assoc()) {
-            $testcases = $row["testCases"];
-            unset($row["testCases"]);
-            $row["testCases"]=json_decode($testcases);
-            $results_array[] = $row;
-           }
-        return "{\"name\":\"" . $jsonResponse["name"] . "\", \"creator\":\"" . $jsonResponse["creator"] . "\", \"questions\":" . json_encode($results_array); 
+            while ($row = $questionResult->fetch_assoc()) {
+               $testcases = $row["testCases"];
+               unset($row["testCases"]);
+               $row["testCases"]=json_decode($testcases);
+               $results_array[] = $row;
+            }
+            $returnVal = "{\"name\":\"" . $jsonResponse["name"] . "\", \"creator\":\"" . $jsonResponse["creator"] . "\", \"questions\":" . json_encode($results_array) . "}";
+        }else {
+            http_response_code(400);
+            $returnVal = "{\"error\":\"" . mysqli_error($connection) . "\"}";
+        }
+        return $returnVal;
+ 
     }
 }
 // initialize http object 

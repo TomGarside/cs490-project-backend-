@@ -25,9 +25,9 @@ class httpHandler {
         switch($method){
  
             case 'post':
-                  $request = json_decode($body);
+                  $body = json_decode($body);
                   header('Content-Type: application/json');
-                  echo $this->db->validateUser($request->user,$request->password);
+                  echo $this->db->validateUser($body->user,$body->password);
                   break;
 
             default:
@@ -45,22 +45,21 @@ class httpHandler {
          $this->dataBase = $username;         
      }
     //validate password and return a string 
-    public function validateUser($user,$password){
+     public function validateUser($user,$password){
         $sql = "SELECT password, role FROM user WHERE name = '" . $user ."' LIMIT 1"; 
-       
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $result = mysqli_query($connection,$sql);
-        $data  = mysqli_fetch_object($result);
-       
-        $retVal = "false";
-        $retRole = "";
+        $data  = mysqli_fetch_object(mysqli_query($connection,$sql));
+        $retRole = "none";
         if(password_verify($password,$data->password)){
-           $retVal = "true";
-           $retRole = $data->role; 
-        }
+            $retVal = "true";
+            $retRole = $data->role; 
+        }else{
+            http_response_code(403); 
+            $retVal = "false";
+        } 
         return "{\"ValidUser\":\"" . $retVal. "\",\"role\":\"" . $retRole . "\"}";    
-      }
-}
+     }
+ }
 // initialize http object 
 $http = new httpHandler("../secrets.txt"); 
 

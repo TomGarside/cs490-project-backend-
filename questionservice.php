@@ -33,7 +33,7 @@ class httpHandler {
             case 'get':
                   header('Content-Type: application/json');
                   echo $this->db->getAllQuestions();
-
+                  break;
             default:
                   http_response_code(405);
         }
@@ -53,23 +53,36 @@ class httpHandler {
      public function insertQuestion($name, $description, $difficulty, $category, $score, $testCases){
         $sql = "INSERT INTO questions (name, description, difficulty, category, score, testCases ) VALUES (\"" . $name . "\",\"" . $description . "\",\"" . $difficulty . "\",\"" . $category  ."\",\"" . $score . "\",'" . json_encode($testCases) . "');";
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $result = mysqli_query($connection,$sql);
-        return mysqli_error($connection);
-  
+        if($result = mysqli_query($connection,$sql)){
+            $output["insert"] = true;
+            http_response_code(201); 
+        }else{
+            http_response_code(400);
+            $output["insert"] = false;
+            $output["error"] = mysqli_error($connection);
+        }
+        return json_encode($output);
+         
     } 
     public function getAllQuestions(){
         $sql = "SELECT * FROM questions;"; 
        
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $result = mysqli_query($connection,$sql);
         
-        while ($row = $result->fetch_assoc()) {
-            $testcases = $row["testCases"];
-            unset($row["testCases"]);
-            $row["testCases"]=json_decode($testcases);
-           $results_array[] = $row;
+        if($result = mysqli_query($connection,$sql)){         
+            while ($row = $result->fetch_assoc()) {
+                $testcases = $row["testCases"];
+                unset($row["testCases"]);
+                $row["testCases"]=json_decode($testcases);
+                $results_array[] = $row;
+            }
+            $output = $results_array;
+        }else{
+            http_response_code(400);
+            $output["error"]=$result; 
         }
-        return json_encode($results_array); 
+        
+        return json_encode($output);
     }
 }
 // initialize http object 
