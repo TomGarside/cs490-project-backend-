@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "23a6b5fb-0071-4765-93ab-8b8d5f1daba2",
+		"name": "490 project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get hash",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/userservice.php?password=snape",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"userservice.php"
+					],
+					"query": [
+						{
+							"key": "password",
+							"value": "snape"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validate user ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user\": \"test\",\n    \"password\": \"pa$$word\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/userservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"userservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get questions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/questionservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"questionservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add question",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"foobar\", \n    \"description\":\"this is a test case\",  \n    \"difficulty\" : \"pretty easy tbh\",   \n    \"category\": \"foobar\",\n    \"testCases\": [\n    \t{\"input\":\"5\" , \"output\":\"10\"},\n    \t{\"input\":\"2\" , \"output\":\"4\"}]\n}\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/questionservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"questionservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insert exam ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"testexam\",\n    \"creator\": \"snape\",\n    \"questions\": [\n        {\n            \"name\": \"foobar\"\n            \n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/examservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"examservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch exam ",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/examservice.php?name=testexam",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"examservice.php"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "testexam"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insert exam result",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user\": \"test\",\n\t\"exam\": \"testexam\", \n    \"results\": [\n    \t{\"question\":\"foobar\",\"answer\":\"print(\\\"HELLO WORLD\\\")\" , \"autograde\":\"10\", \"adjustedGrade\":\"43\", \"finalGrade\":\"30\"},\n    \t{\"question\":\"foobar2\",\"answer\":\"print(\\\"HELLO WORLD\\\")\" , \"autograde\":\"10\", \"adjustedGrade\":\"43\", \"finalGrade\":\"30\"},\n    \t{\"question\":\"foobar3\",\"answer\":\"print(\\\"HELLO WORLD\\\")\" , \"autograde\":\"10\", \"adjustedGrade\":\"43\", \"finalGrade\":\"30\"}\n    \t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/resultservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"resultservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch  student exam Results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/resultservice.php?exam=testexam&user=asc8",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"resultservice.php"
+					],
+					"query": [
+						{
+							"key": "exam",
+							"value": "testexam"
+						},
+						{
+							"key": "user",
+							"value": "asc8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update exam result ",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/resultservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"resultservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch   all exam Results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/resultservice.php?exam=testexam&user=asc8",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"resultservice.php"
+					],
+					"query": [
+						{
+							"key": "exam",
+							"value": "testexam"
+						},
+						{
+							"key": "user",
+							"value": "asc8"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
