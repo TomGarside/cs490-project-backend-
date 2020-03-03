@@ -76,7 +76,8 @@ class httpHandler {
         $result = mysqli_query($connection,$sql);
         $jsonResponse = $result->fetch_assoc();        
          
-        $sqlQuestions = "SELECT * FROM questions INNER JOIN examQuestion ON questions.name=examQuestion.questionName WHERE examQuestion.examname=\"" . $examName ."\";";
+        $sqlQuestions = "SELECT * FROM questions INNER JOIN examQuestion ON questions.name=examQuestion.questionName";
+        $sqlQuestions.= " WHERE examQuestion.examname=\"" . $examName ."\";";
         if ($questionResult = mysqli_query($connection,$sqlQuestions)){
 
             while ($row = $questionResult->fetch_assoc()) {

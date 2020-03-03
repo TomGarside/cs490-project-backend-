@@ -65,7 +65,9 @@ class httpHandler {
         foreach($results as &$result){
             $sql.= "\nINSERT INTO"; 
             $sql.= " questionResult (user, exam, question, answer, autograde, adjustedGrade, finalGrade)";
-            $sql.= " VALUES (\"" . $name . "\",\"" . "$exam" . "\",\"" . $result->question . "\",\"" . mysqli_real_escape_string($connection,$result->answer) . "\",\"" . $result->autograde . "\",\"" . $result->adjustedGrade ."\",\"" . $result->finalGrade ."\");";    
+            $sql.= " VALUES (\"" . $name . "\",\"" . "$exam" . "\",\"" . $result->question . "\",\"";
+            $sql.= mysqli_real_escape_string($connection,$result->answer) . "\",\"" . $result->autograde; 
+            $sql.= "\",\"" . $result->adjustedGrade ."\",\"" . $result->finalGrade ."\");";    
         }
         
         if(!mysqli_multi_query($connection,$sql)){
@@ -81,7 +83,10 @@ class httpHandler {
      // get all student results for a single exam
      public function getAllExamResults($exam){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase); 
-        $sql = "SELECT user.name AS user, questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade  FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $exam . "\";"; 
+        $sql = "SELECT user.name AS user, questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
+        $sql.= " FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name";
+        $sql.= " JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $exam . "\";"; 
+        
         if($result = mysqli_query($connection,$sql)){
             while ($row = $result->fetch_assoc()) {
                $row["testCases"] = json_decode($row["testCases"]); 
@@ -97,7 +102,10 @@ class httpHandler {
     // get exam results for a sigle student 
     public function getExamResult($user, $examName){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $sql = "SELECT  questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade  FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $examName . "\" AND questionResult.user = \"". $user. "\";";
+        $sql = "SELECT  questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
+        $sql.= " FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name";
+        $sql.= " JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $examName . "\" AND questionResult.user = \"". $user. "\";";
+        
         if($result = mysqli_query($connection,$sql)){ 
             while ($row = $result->fetch_assoc()) {
                 $row["testCases"] = json_decode($row["testCases"]);
@@ -115,7 +123,8 @@ class httpHandler {
     //update exam result for student 
      public function updateExamResult($user, $exam, $question, $autoGrade, $adjustedGrade) {
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade . "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";";
+        $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade ;
+        $sql.= "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";";
         if(mysqli_query($connection, $sql)){
             $output["update"] = true; 
         }else{
