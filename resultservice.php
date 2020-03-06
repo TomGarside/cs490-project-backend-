@@ -1,6 +1,6 @@
 <?php 
 // uncomment for debug
-//ini_set('display_errors', 1); error_reporting(E_ALL);
+ini_set('display_errors', 1); error_reporting(E_ALL);
 
 // handles http connection and initializes DB object 
 class httpHandler {
@@ -99,7 +99,7 @@ class httpHandler {
         }
         return json_encode($output); 
      }
-    // get exam results for a sigle student 
+    // get exam results for a single student 
     public function getExamResult($user, $examName){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $sql = "SELECT  questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
@@ -125,10 +125,13 @@ class httpHandler {
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade ;
         $sql.= "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";";
-        if(mysqli_query($connection, $sql)){
+        $response = mysqli_query($connection, $sql);
+        if(mysqli_affected_rows($connection) !== 0){
+            $output["affected rows"] = mysqli_affected_rows($connection);
             $output["update"] = true; 
         }else{
             http_response_code(400);
+            $output["affected rows"] = mysqli_affected_rows($connection);
             $output["update"] = false;
             $output["error"] = mysqli_error($connection);
         }
