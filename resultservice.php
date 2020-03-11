@@ -126,7 +126,7 @@ class httpHandler {
         $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade ;
         $sql.= "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";";
         $response = mysqli_query($connection, $sql);
-        if(mysqli_affected_rows($connection) !== 0){
+        if(mysqli_affected_rows($connection) > 0){
             $output["affected rows"] = mysqli_affected_rows($connection);
             $output["update"] = true; 
         }else{

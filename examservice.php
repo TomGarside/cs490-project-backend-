@@ -34,7 +34,13 @@ class httpHandler {
             case 'put':
                  $json_body = json_decode($body); 
                  header('Content-Type: application/json');
-                 echo $this->db->assignExam($json_body->exam,$json_body->user);
+                 if($json_body->exam and $json_body->user){
+                     echo $this->db->assignExam($json_body->exam,$json_body->user);
+                 }elseif($json_body->examGraded){
+                     echo $this->db->markExamGraded($json_body->examGraded);
+                 }else{
+                     http_response_code(400);
+                 }            
                  break;  
    
             // return all questions  
@@ -63,7 +69,24 @@ class httpHandler {
          $this->username = $username;
          $this->password = $password; 
          $this->dataBase = $username;        
-     }          
+     }
+     // mark an exam as graded
+     public function markExamGraded($exam){
+         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase); 
+         $sql = "UPDATE exam SET graded=True WHERE name = \"" . $exam ."\";";
+         $response = mysqli_query($connection, $sql);
+         if(mysqli_affected_rows($connection) > 0){
+             $output["affected rows"] = mysqli_affected_rows($connection);
+             $output["update"] = true; 
+         }else{
+             http_response_code(400);
+             $output["affected rows"] = mysqli_affected_rows($connection);
+             $output["update"] = false;
+             $output["error"] = mysqli_error($connection);
+         }
+         return json_encode($output); 
+     }
+     
      // create an exam in db and link to included questions 
      public function createExam($name, $creator, $questions){
         $sql = "INSERT INTO exam (name,creator) VALUES (\"" . $name . "\",\"" . $creator . "\");"; 
@@ -105,7 +128,7 @@ class httpHandler {
         $sql = "INSERT INTO studentExam (name, exam) VALUES (\"" . $user . "\", \"" . $exam . "\");"; 
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         mysqli_query($connection, $sql);
-        if(mysqli_affected_rows($connection) !== 0){
+        if(mysqli_affected_rows($connection) > 0){
             $output["affected rows"] = mysqli_affected_rows($connection);
             $output["update"] = true; 
         }else{
