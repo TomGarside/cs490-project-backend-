@@ -373,6 +373,129 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "assign an exam to a user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/javascript"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user\": \"asc8\", \n\t\"exam\": \"testexam2\"\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "javascript"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/examservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"examservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fetch list of exams assigned to a user ",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/examservice.php?user=asc8",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"examservice.php"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "asc8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "mark an exam graded",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/javascript",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"examGraded\": \"testexam\"\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "javascript"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/examservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"examservice.php"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
