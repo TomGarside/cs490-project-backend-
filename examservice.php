@@ -23,16 +23,31 @@ class httpHandler {
     public function handleRequest($request, $method, $body){
 
         switch($method){
-            // insert test case 
+            // create exam  
             case 'post':
-                  $request = json_decode($body);
+                  $json_body = json_decode($body);
                   header('Content-Type: application/json');
-                  echo $this->db->createExam($request->name, $request->creator, $request->questions);
+                  echo $this->db->createExam($json_body->name, $json_body->creator, $json_body->questions);
                   break;
+
+            // assign an exam to a student
+            case 'put':
+                 $json_body = json_decode($body); 
+                 header('Content-Type: application/json');
+                 echo $this->db->assignExam($json_body->exam,$json_body->user);
+                 break;  
+   
             // return all questions  
             case 'get':
                   header('Content-Type: application/json');
-                  echo $this->db->getexam($_GET["name"]);
+                  if($_GET["name"]){
+                      echo $this->db->getexam($_GET["name"]);
+                  }elseif($_GET["user"]){
+                      echo $this->db->getStudentExams($_GET["user"]);
+                  }
+                  else{
+                      http_response_code(400);
+                  }
                   break;
 
             default:
@@ -48,9 +63,9 @@ class httpHandler {
          $this->username = $username;
          $this->password = $password; 
          $this->dataBase = $username;        
-     }
-
-    public function createExam($name, $creator, $questions){
+     }          
+     // create an exam in db and link to included questions 
+     public function createExam($name, $creator, $questions){
         $sql = "INSERT INTO exam (name,creator) VALUES (\"" . $name . "\",\"" . $creator . "\");"; 
         foreach($questions as &$question){
            $sql = $sql . "\nINSERT INTO examQuestion (examname, questionName) VALUES (\"" . $name . "\",\"" . $question->name . "\");";
@@ -65,10 +80,43 @@ class httpHandler {
             $response_body["insert"] = false;
             $response_body["error"] = json_encode(mysqli_error($connection));        
         }
-        return json_encode($response_body); ;
+        return json_encode($response_body); 
   
     }
-    //validate password and return a string 
+    // get list of exams for a student 
+     public function getStudentExams($user){ 
+         $retval;
+         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+         $sql = "SELECT exam FROM studentExam WHERE name = \"" . $user . "\";";
+         if ($questionResult = mysqli_query($connection, $sql)){
+             while ($row = $questionResult->fetch_assoc()) {
+                 $results_array[] = $row; 
+             }
+             $retval = $results_array;
+         }
+         else {http_response_code(418);
+               $retval["assignment"] = "failed";
+
+         }   
+         return json_encode($retval); 
+     }     
+    // assign an exam to a student
+     public function assignExam($exam, $user){
+        $sql = "INSERT INTO studentExam (name, exam) VALUES (\"" . $user . "\", \"" . $exam . "\");"; 
+        $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+        mysqli_query($connection, $sql);
+        if(mysqli_affected_rows($connection) !== 0){
+            $output["affected rows"] = mysqli_affected_rows($connection);
+            $output["update"] = true; 
+        }else{
+            http_response_code(400);
+            $output["affected rows"] = mysqli_affected_rows($connection);
+            $output["update"] = false;
+            $output["error"] = mysqli_error($connection);
+        }
+        return json_encode($output); 
+    }   
+    //get exam and all questions from db 
     public function getexam($examName){
         $sql = "SELECT * FROM exam WHERE name=\"" . $examName . "\" LIMIT 1;"; 
        
