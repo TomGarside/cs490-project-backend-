@@ -308,7 +308,23 @@
 			"name": "update exam result ",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user\": \"asc8\", \n\t\"exam\": \"newExam2\", \n\t\"question\": \"cube\", \n\t\"autograde\": 20, \n\t\"adjustedGrade\": 257\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "https://web.njit.edu/~tg253/490/resultservice.php",
 					"protocol": "https",
