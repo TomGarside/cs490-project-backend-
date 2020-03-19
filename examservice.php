@@ -91,7 +91,7 @@ class httpHandler {
      public function createExam($name, $creator, $questions){
         $sql = "INSERT INTO exam (name,creator) VALUES (\"" . $name . "\",\"" . $creator . "\");"; 
         foreach($questions as &$question){
-           $sql = $sql . "\nINSERT INTO examQuestion (examname, questionName) VALUES (\"" . $name . "\",\"" . $question->name . "\");";
+           $sql = $sql . "\nINSERT INTO examQuestion (examname, questionName, score) VALUES (\"" . $name . "\",\"" . $question->name . "\",\"" . $question->score . "\");\n";
         }
         
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
@@ -157,7 +157,7 @@ class httpHandler {
                $row["testCases"]=json_decode($testcases);
                $results_array[] = $row;
             }
-            $returnVal = "{\"name\":\"" . $jsonResponse["name"] . "\", \"creator\":\"" . $jsonResponse["creator"] . "\", \"questions\":" . json_encode($results_array) . "}";
+            $returnVal = "{\"name\":\"" . $jsonResponse["name"] . "\", \"creator\":\"" . $jsonResponse["creator"] . "\", \"graded\":\"" . $jsonResponse["graded"] . "\", \"questions\":" . json_encode($results_array) . "}";
         }else {
             http_response_code(400);
             $returnVal = "{\"error\":\"" . mysqli_error($connection) . "\"}";

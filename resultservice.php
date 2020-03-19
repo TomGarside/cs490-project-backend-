@@ -83,7 +83,7 @@ class httpHandler {
      // get all student results for a single exam
      public function getAllExamResults($exam){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase); 
-        $sql = "SELECT user.name AS user, questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
+        $sql = "SELECT user.name AS user, questions.name as question, exam.graded as graded, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
         $sql.= " FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name";
         $sql.= " JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $exam . "\";"; 
         
@@ -106,6 +106,15 @@ class httpHandler {
         $sql.= " FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name";
         $sql.= " JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $examName . "\" AND questionResult.user = \"". $user. "\";";
         
+        $gradedSql = "SELECT graded FROM exam WHERE name = \"" . $examName . "\";"; 
+        
+        if ($result = mysqli_query($connection,$gradedSql)){
+            $gradedVal = $result->fetch_assoc();
+            
+
+        }
+         
+         
         if($result = mysqli_query($connection,$sql)){ 
             while ($row = $result->fetch_assoc()) {
                 $row["testCases"] = json_decode($row["testCases"]);
@@ -113,6 +122,7 @@ class httpHandler {
             }
             $output["user"] = $user; 
             $output["exam"] = $examName; 
+            $output["graded"] = $gradedVal["graded"];
             $output["results"] = $results_array;
         }else{
             http_response_code(400);
