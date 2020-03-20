@@ -23,7 +23,14 @@ class httpHandler {
     public function handleRequest($request, $method, $body){
 
         switch($method){
- 
+            case 'get':
+                  header('Content-Type: application/json');
+                  if ($_GET["role"]){
+                      echo $this->db->getAllRole($_GET["role"]); 
+                  }else{
+                      http_response_code(400);
+                  }
+                  break;
             case 'post':
                   $body = json_decode($body);
                   header('Content-Type: application/json');
@@ -44,6 +51,23 @@ class httpHandler {
          $this->password = $password; 
          $this->dataBase = $username;         
      }
+     // get all users with a specified role 
+     public function getAllRole($role){
+         $sql = "SELECT name FROM user WHERE role = \"" . $role . "\";";
+         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+         if($data  = (mysqli_query($connection,$sql))){
+             while ($row = $data->fetch_assoc()) {
+                 $results_array[] = $row;
+             }
+             $returnVal[$role] = $results_array;
+             }else{
+             http_response_code(400);
+             $returnVal = "{\"error\":\"" . mysqli_error($connection) . "\"}";
+             }
+             
+         return json_encode($returnVal); 
+     }
+
     //validate password and return a string 
      public function validateUser($user,$password){
         $sql = "SELECT password, role FROM user WHERE name = '" . $user ."' LIMIT 1"; 
