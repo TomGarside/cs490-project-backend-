@@ -50,6 +50,8 @@ class httpHandler {
                       echo $this->db->getexam($_GET["name"]);
                   }elseif($_GET["user"]){
                       echo $this->db->getStudentExams($_GET["user"]);
+                  }elseif($_GET["prof"]){
+                      echo $this->db->getProfessorExams($_GET["prof"]);
                   }
                   else{
                       http_response_code(400);
@@ -70,6 +72,24 @@ class httpHandler {
          $this->password = $password; 
          $this->dataBase = $username;        
      }
+     // get all exams created by professor 
+     public function getProfessorExams($prof){
+         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+         $sql = "SELECT name FROM exam WHERE creator=\"" . $prof ."\";";
+         if ($result = mysqli_query($connection,$sql)){
+             while ($row = $result->fetch_assoc()) {
+                 $results_array[] = $row;
+             }
+             $output["exams"] = $results_array;
+         }else{
+                 http_response_code(400);
+                 $output["error"] = mysqli_error($connection);
+
+             }
+
+             return json_encode($output);
+     }
+
      // mark an exam as graded
      public function markExamGraded($exam){
          $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase); 
