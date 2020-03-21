@@ -27,6 +27,7 @@ mysql -u $username -p$password  -h $host -D tg253  <<EOF
  CREATE TABLE IF NOT EXISTS exam (
          name VARCHAR(100), 
          creator VARCHAR(20),
+         closed  BOOL, 
          graded  BOOL, 
          PRIMARY KEY (name),
          FOREIGN KEY (creator) REFERENCES user (name)   
@@ -35,6 +36,7 @@ mysql -u $username -p$password  -h $host -D tg253  <<EOF
  CREATE TABLE IF NOT EXISTS examQuestion (                                                     
           examname VARCHAR(100),                                                             
           questionName VARCHAR(100),
+          score VARCHAR(10),
           PRIMARY KEY (examname, questionName),
           FOREIGN KEY (examname) REFERENCES exam (name),
           FOREIGN KEY (questionName) REFERENCES questions (name)
