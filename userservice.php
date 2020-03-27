@@ -1,4 +1,6 @@
 <?php 
+// uncomment for debug
+// ini_set('display_errors', 1); error_reporting(E_ALL);
 
 // handles http connection and initializes DB object 
 class httpHandler {
@@ -21,11 +23,18 @@ class httpHandler {
     public function handleRequest($request, $method, $body){
 
         switch($method){
- 
-            case 'post':
-                  $request = json_decode($body);
+            case 'get':
                   header('Content-Type: application/json');
-                  echo "{\"ValidUser\":\"" . $this->db->validateUser($request->user,$request->password) . "\"}";
+                  if ($_GET["role"]){
+                      echo $this->db->getAllRole($_GET["role"]); 
+                  }else{
+                      http_response_code(400);
+                  }
+                  break;
+            case 'post':
+                  $body = json_decode($body);
+                  header('Content-Type: application/json');
+                  echo $this->db->validateUser($body->user,$body->password);
                   break;
 
             default:
@@ -41,30 +50,40 @@ class httpHandler {
          $this->username = $username;
          $this->password = $password; 
          $this->dataBase = $username;         
-                                                  
-         // create table if it does not exist           
-         $sql = "CREATE TABLE IF NOT EXISTS Users (name VARCHAR(20), password VARCHAR(100));";  
-         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-         $result = mysqli_query($connection,$sql); 
-          
-         if(!$result){ die("failed to create table"); }
      }
+     // get all users with a specified role 
+     public function getAllRole($role){
+         $sql = "SELECT name FROM user WHERE role = \"" . $role . "\";";
+         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+         if($data  = (mysqli_query($connection,$sql))){
+             while ($row = $data->fetch_assoc()) {
+                 $results_array[] = $row;
+             }
+             $returnVal[$role] = $results_array;
+             }else{
+             http_response_code(400);
+             $returnVal = "{\"error\":\"" . mysqli_error($connection) . "\"}";
+             }
+             
+         return json_encode($returnVal); 
+     }
+
     //validate password and return a string 
-    public function validateUser($user,$password){
-        $sql = "SELECT password FROM Users WHERE name = '" . $user ."' LIMIT 1"; 
-       
+     public function validateUser($user,$password){
+        $sql = "SELECT password, role FROM user WHERE name = '" . $user ."' LIMIT 1"; 
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $result = mysqli_query($connection,$sql);
-        $storedPassword = mysqli_fetch_object($result);
-       
-        $retVal = "false";
-        
-        if(password_verify($password,$storedPassword->password)){
-           $retVal = "true"; 
-        }
-        return $retVal;    
-      }
-}
+        $data  = mysqli_fetch_object(mysqli_query($connection,$sql));
+        $retRole = "none";
+        if(password_verify($password,$data->password)){
+            $retVal = "true";
+            $retRole = $data->role; 
+        }else{
+            http_response_code(403); 
+            $retVal = "false";
+        } 
+        return "{\"ValidUser\":\"" . $retVal. "\",\"role\":\"" . $retRole . "\"}";    
+     }
+ }
 // initialize http object 
 $http = new httpHandler("../secrets.txt"); 
 
