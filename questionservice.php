@@ -39,6 +39,12 @@ class httpHandler {
                   header('Content-Type: application/json');
                   echo $this->db->getAllQuestions();
                   break;
+            // edit content of a question
+            case 'put':
+                  $request = json_decode($body);
+                  header('Content-Type: application/json');
+                  echo $this->db->editQuestion(); 
+                  break;
             default:
                   http_response_code(405);
         }
@@ -53,6 +59,11 @@ class httpHandler {
          $this->password = $password; 
          $this->dataBase = $username;         
                                                   
+     }
+
+     public function editQuestion(){
+     
+
      }
 
      public function insertQuestion($name, $description, $difficulty, $category, $score, $testCases){
