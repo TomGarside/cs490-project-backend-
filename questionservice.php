@@ -43,7 +43,12 @@ class httpHandler {
             case 'put':
                   $request = json_decode($body);
                   header('Content-Type: application/json');
-                  echo $this->db->editQuestion(); 
+                  echo $this->db->editQuestion($request->name,
+                                               $request->description,
+                                               $request->difficulty,
+                                               $request->category,
+                                               $request->score,
+                                               $request->testCases);
                   break;
             default:
                   http_response_code(405);
@@ -60,10 +65,23 @@ class httpHandler {
          $this->dataBase = $username;         
                                                   
      }
-
-     public function editQuestion(){
-     
-
+     // edit question vallues for specified question 
+     public function editQuestion($name,$description,$difficulty,$category,$score,$testCases){
+         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+         $sql = "UPDATE questions SET description=\"". $description . "\", difficulty=\"" . $difficulty ;
+         $sql.= "\", category =\"" . $category . "\", score =\"" . $score . "\", testCases = '" . json_encode($testCases) . "'" ; 
+         $sql.= " WHERE name =\"" . $name . "\";";
+        
+         $response = mysqli_query($connection, $sql);
+         if(mysqli_affected_rows($connection) > 0){
+             $output["affected rows"] = mysqli_affected_rows($connection);
+             $output["update"] = true;
+         }else{
+             http_response_code(400);
+             $output["update"] = false;
+             $output["error"] = mysqli_error($connection);
+         }
+         return json_encode($output);
      }
 
      public function insertQuestion($name, $description, $difficulty, $category, $score, $testCases){
