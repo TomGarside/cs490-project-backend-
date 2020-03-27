@@ -33,7 +33,7 @@ class httpHandler {
             case 'put':
                   $body = json_decode($body);
                   header('Content-Type: application/json');
-                  echo $this->db->updateExamResult($body->user, $body->exam, $body->question, $body->autograde, $body->adjustedGrade);
+                  echo $this->db->updateExamResult($body->user, $body->exam, $body->question, $body->autograde, $body->adjustedGrade, $body->testCaseResponse);
                   break;
             // return result (combo of student and exam) if student not specified gets all results for exam   
             case 'get':
@@ -64,12 +64,11 @@ class httpHandler {
         $sql=""; 
         foreach($results as &$result){
             $sql.= "\nINSERT INTO"; 
-            $sql.= " questionResult (user, exam, question, answer, autograde, adjustedGrade, finalGrade)";
+            $sql.= " questionResult (user, exam, question, answer, autograde, adjustedGrade, finalGrade, testCaseResponse)";
             $sql.= " VALUES (\"" . $name . "\",\"" . "$exam" . "\",\"" . $result->question . "\",\"";
             $sql.= mysqli_real_escape_string($connection,$result->answer) . "\",\"" . $result->autograde; 
-            $sql.= "\",\"" . $result->adjustedGrade ."\",\"" . $result->finalGrade ."\");";    
+            $sql.= "\",\"" . $result->adjustedGrade ."\",\"" . $result->finalGrade . "\",'" . json_encode($result->testCaseResponse) . "');";    
         }
-        
         if(!mysqli_multi_query($connection,$sql)){
             http_response_code(400);
             $returnVal["insert"] = false; 
@@ -83,7 +82,7 @@ class httpHandler {
      // get all student results for a single exam
      public function getAllExamResults($exam){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase); 
-        $sql = "SELECT user.name AS user, questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
+        $sql = "SELECT user.name AS user, questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade, testCaseResponse";
         $sql.= " FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name";
         $sql.= " JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $exam . "\";"; 
         
@@ -102,7 +101,7 @@ class httpHandler {
     // get exam results for a single student 
     public function getExamResult($user, $examName){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $sql = "SELECT  questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade";
+        $sql = "SELECT  questions.name as question, questions.testCases, answer, autoGrade, adjustedGrade, finalGrade, testCaseResponse";
         $sql.= " FROM questionResult JOIN exam ON questionResult.exam=exam.name JOIN questions ON questionResult.question=questions.name";
         $sql.= " JOIN user ON questionResult.User=user.name WHERE questionResult.exam = \"" . $examName . "\" AND questionResult.user = \"". $user. "\";";
         
@@ -131,10 +130,11 @@ class httpHandler {
         return json_encode($output);
      }
     //update exam result for student 
-     public function updateExamResult($user, $exam, $question, $autoGrade, $adjustedGrade) {
+     public function updateExamResult($user, $exam, $question, $autoGrade, $adjustedGrade, $testCaseResponse) {
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
         $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade ;
-        $sql.= "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";";
+        $sql.= "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question ;
+        $sql.= "\" AND testCaseResponse='" . json_encode($testCaseResponse) . "';";
         $response = mysqli_query($connection, $sql);
         if(mysqli_affected_rows($connection) > 0){
             $output["affected rows"] = mysqli_affected_rows($connection);
