@@ -248,7 +248,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"user\": \"test\",\n\t\"exam\": \"testexam\", \n    \"results\": [\n    \t{\"question\":\"foobar\",\"answer\":\"print(\\\"HELLO WORLD\\\")\" , \"autograde\":\"10\", \"adjustedGrade\":\"43\", \"finalGrade\":\"30\"},\n    \t{\"question\":\"foobar2\",\"answer\":\"print(\\\"HELLO WORLD\\\")\" , \"autograde\":\"10\", \"adjustedGrade\":\"43\", \"finalGrade\":\"30\"},\n    \t{\"question\":\"foobar3\",\"answer\":\"print(\\\"HELLO WORLD\\\")\" , \"autograde\":\"10\", \"adjustedGrade\":\"43\", \"finalGrade\":\"30\"}\n    \t]\n}",
+					"raw": "{\n    \"user\": \"test\",\n    \"exam\": \"testexam\",\n    \"results\": [\n        {\n            \"question\": \"foobar\",\n            \"answer\": \"print(\\\"HELLO WORLD\\\")\",\n            \"autograde\": \"10\",\n            \"adjustedGrade\": \"43\",\n            \"finalGrade\": \"30\",\n            \"testCaseResponse\": [\n                {\n                    \"input\": \"x\",\n                    \"output\": \"y\",\n                    \"studentOutput\": \"z\",\n                    \"score\": 0,\n                    \"comment\": \"professor comment hear\"\n                },\n                {\n                    \"input\": \"x\",\n                    \"output\": \"y\",\n                    \"studentOutput\": \"z\",\n                    \"score\": 0,\n                    \"comment\": \"professor comment hear\"\n                }\n            ]\n        },\n        {\n            \"question\": \"foobar2\",\n            \"answer\": \"print(\\\"HELLO WORLD\\\")\",\n            \"autograde\": \"10\",\n            \"adjustedGrade\": \"43\",\n            \"finalGrade\": \"30\",\n            \"testCaseResponse\": [\n                {\n                    \"input\": \"x\",\n                    \"output\": \"y\",\n                    \"studentOutput\": \"z\",\n                    \"score\": 0,\n                    \"comment\": \"professor comment hear\"\n                },\n                {\n                    \"input\": \"x\",\n                    \"output\": \"y\",\n                    \"studentOutput\": \"z\",\n                    \"score\": 0,\n                    \"comment\": \"professor comment hear\"\n                }\n            ]\n        },\n        {\n            \"question\": \"foobar3\",\n            \"answer\": \"print(\\\"HELLO WORLD\\\")\",\n            \"autograde\": \"10\",\n            \"adjustedGrade\": \"43\",\n            \"finalGrade\": \"30\",\n            \"testCaseResponse\": [\n                {\n                    \"input\": \"x\",\n                    \"output\": \"y\",\n                    \"studentOutput\": \"z\",\n                    \"score\": 0,\n                    \"comment\": \"professor comment hear\"\n                },\n                {\n                    \"input\": \"x\",\n                    \"output\": \"y\",\n                    \"studentOutput\": \"z\",\n                    \"score\": 0,\n                    \"comment\": \"professor comment hear\"\n                }\n            ]\n            \n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -318,7 +318,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"user\": \"asc8\", \n\t\"exam\": \"newExam2\", \n\t\"question\": \"cube\", \n\t\"autograde\": 20, \n\t\"adjustedGrade\": 257\n}",
+					"raw": "{\n\t\"user\": \"asc8\", \n\t\"exam\": \"testexam\", \n\t\"question\": \"foobar\", \n\t\"autograde\": 20, \n\t\"adjustedGrade\": 257,\n\t\"testCaseResponse\":[\n    {\n        \"input\": \"x\",\n        \"output\": \"y\",\n        \"studentOutput\": \"z\",\n        \"score\": 0,\n        \"comment\": \"professor comment hear\"\n    },\n    {\n        \"input\": \"x\",\n        \"output\": \"y\",\n        \"studentOutput\": \"z\",\n        \"score\": 0,\n        \"comment\": \"professor comment hear\"\n    }\n]\n\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -511,7 +511,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"foobar\", \n    \"description\":\"this is a test case\",  \n    \"difficulty\" : \"pretty easy tbh\",   \n    \"category\": \"foobar\",\n    \"testCases\": [\n    \t{\"input\":\"5\" , \"output\":\"10\"},\n    \t{\"input\":\"2\" , \"output\":\"4\"}]\n}\n ",
+					"raw": "{\n\t\"name\": \"foobar\", \n    \"description\":\"this was a test case\",  \n    \"difficulty\" : \"pretty easy tbh\",   \n    \"category\": \"foobar\",\n    \"testCases\": [\n    \t{\"input\":\"5\" , \"output\":\"10\"},\n    \t{\"input\":\"2\" , \"output\":\"4\"}]\n}\n ",
 					"options": {
 						"raw": {
 							"language": "json"
