@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "23a6b5fb-0071-4765-93ab-8b8d5f1daba2",
+		"_postman_id": "be96145d-5f55-4e21-8e29-a7ef174dc42d",
 		"name": "490 project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -112,7 +112,7 @@
 			"response": []
 		},
 		{
-			"name": "add question",
+			"name": "update question",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -492,6 +492,44 @@
 						"~tg253",
 						"490",
 						"examservice.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update question",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"foobar\", \n    \"description\":\"this is a test case\",  \n    \"difficulty\" : \"pretty easy tbh\",   \n    \"category\": \"foobar\",\n    \"testCases\": [\n    \t{\"input\":\"5\" , \"output\":\"10\"},\n    \t{\"input\":\"2\" , \"output\":\"4\"}]\n}\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://web.njit.edu/~tg253/490/questionservice.php",
+					"protocol": "https",
+					"host": [
+						"web",
+						"njit",
+						"edu"
+					],
+					"path": [
+						"~tg253",
+						"490",
+						"questionservice.php"
 					]
 				}
 			},
