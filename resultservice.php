@@ -88,7 +88,8 @@ class httpHandler {
         
         if($result = mysqli_query($connection,$sql)){
             while ($row = $result->fetch_assoc()) {
-               $row["testCases"] = json_decode($row["testCases"]); 
+               $row["testCases"] = json_decode($row["testCases"]);
+               $row["testCaseResponse"] = json_decode($row["testCaseResponse"]); 
                $results_array[] = $row;
             }
             $output[$exam]=$results_array;
@@ -117,6 +118,7 @@ class httpHandler {
         if($result = mysqli_query($connection,$sql)){ 
             while ($row = $result->fetch_assoc()) {
                 $row["testCases"] = json_decode($row["testCases"]);
+                $row["testCaseResponse"] = json_decode($row["testCaseResponse"]);
                 $results_array[] = $row;
             }
             $output["user"] = $user; 
@@ -132,9 +134,9 @@ class httpHandler {
     //update exam result for student 
      public function updateExamResult($user, $exam, $question, $autoGrade, $adjustedGrade, $testCaseResponse) {
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-        $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"" . $adjustedGrade ;
-        $sql.= "\" WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question ;
-        $sql.= "\" AND testCaseResponse='" . json_encode($testCaseResponse) . "';";
+        $sql = "UPDATE questionResult SET autoGrade=\"". $autoGrade . "\", adjustedGrade=\"";
+        $sql.= $adjustedGrade . "\", testCaseResponse='" . json_encode($testCaseResponse);
+        $sql.= "' WHERE User=\"" . $user . "\" AND exam=\"" . $exam . "\" AND question=\"" . $question . "\";" ;
         $response = mysqli_query($connection, $sql);
         if(mysqli_affected_rows($connection) > 0){
             $output["affected rows"] = mysqli_affected_rows($connection);
