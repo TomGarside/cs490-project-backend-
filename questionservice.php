@@ -32,7 +32,8 @@ class httpHandler {
                                                  $request->difficulty,
                                                  $request->category,
                                                  $request->score, 
-                                                 $request->testCases);
+                                                 $request->testCases,
+                                                 $request->questionConstraint);
                   break;
             // return all questions  
             case 'get':
@@ -48,7 +49,8 @@ class httpHandler {
                                                $request->difficulty,
                                                $request->category,
                                                $request->score,
-                                               $request->testCases);
+                                               $request->testCases,
+                                               $request->questionConstraint);
                   break;
             default:
                   http_response_code(405);
@@ -66,12 +68,12 @@ class httpHandler {
                                                   
      }
      // edit question vallues for specified question 
-     public function editQuestion($name,$description,$difficulty,$category,$score,$testCases){
+     public function editQuestion($name, $description, $difficulty, $category, $score, $testCases, $questionConstraint){
          $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
-         $sql = "UPDATE questions SET description=\"". $description . "\", difficulty=\"" . $difficulty ;
-         $sql.= "\", category =\"" . $category . "\", score =\"" . $score . "\", testCases = '" . json_encode($testCases) . "'" ; 
+         $sql = "UPDATE questions SET description=\"". mysqli_real_escape_string($connection, $description) . "\", difficulty=\"" . $difficulty . "\", questionConstraint=\"" . $questionConstraint;
+         $sql.= "\", category =\"" . $category . "\", score =\"" . $score . "\", testCases = '" . mysqli_real_escape_string($connection, json_encode($testCases)) . "'" ; 
          $sql.= " WHERE name =\"" . $name . "\";";
-        
+         
          $response = mysqli_query($connection, $sql);
          if(mysqli_affected_rows($connection) > 0){
              $output["affected rows"] = mysqli_affected_rows($connection);
@@ -84,12 +86,12 @@ class httpHandler {
          return json_encode($output);
      }
 
-     public function insertQuestion($name, $description, $difficulty, $category, $score, $testCases){
-        $sql = "INSERT INTO questions (name, description, difficulty, category, score, testCases )";
-        $sql.= " VALUES (\"" . $name . "\",\"" . $description . "\",\"" . $difficulty . "\",\""; 
-        $sql.= $category  ."\",\"" . $score . "\",'" . json_encode($testCases) . "');";
-
+     public function insertQuestion($name, $description, $difficulty, $category, $score, $testCases, $questionConstraint){
         $connection = mysqli_connect($this->servername, $this->username, $this->password, $this->dataBase);
+        $sql = "INSERT INTO questions (name, description, difficulty, category, score, testCases, questionConstraint )";
+        $sql.= " VALUES (\"" . $name . "\",\"" . mysqli_real_escape_string($connection, $description) . "\",\"" . $difficulty . "\",\""; 
+        $sql.= $category  ."\",\"" . $score . "\",'" . mysqli_real_escape_string($connection,json_encode($testCases)) . "',\"" . $questionConstraint . "\");";
+       
         if($result = mysqli_query($connection,$sql)){
             $output["insert"] = true;
             http_response_code(201); 
